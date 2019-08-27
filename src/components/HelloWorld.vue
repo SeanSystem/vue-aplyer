@@ -15,12 +15,18 @@
                     </el-option>
                 </el-select>
             </el-col>
-            <el-col :span="6">
+            <el-col :span="2">
                 <el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button>
+            </el-col>
+            <el-col :span="2">
+                <el-button type="primary" @click="preSearch">前一页</el-button>
+            </el-col>
+            <el-col :span="2">
+                <el-button type="primary" @click="nextSearch">后一页</el-button>
             </el-col>
         </el-row>
         <div>
-            <aplayer ref="aplayer" :audio="audio" :lrcType="3" autoplay fixed/> <!--fixed 吸底模式 mini 迷你模式-->
+            <aplayer ref="aplayer" :audio="audio" :lrcType="3" autoplay/> <!--fixed 吸底模式 mini 迷你模式-->
         </div>
     </div>
 </template>
@@ -51,14 +57,34 @@
                     label: '50'
                 }],
                 pageSize: 10,
+                pageNum: 0
             };
         },
         methods: {
+            nextSearch(){
+              this.pageNum++;
+              if(this.query == null){
+                  this.randomSearch();
+              }else {
+                  this.search();
+              }
+            },
+            preSearch(){
+                if(this.pageNum <= 0){
+                    this.pageNum = 0;
+                }
+                this.pageNum--;
+                if(this.query == null){
+                    this.randomSearch();
+                }else {
+                    this.search();
+                }
+            },
             search() {
                 this.axios.get(this.musicUrl,
                     {
                         params: {
-                            pageNum: 0,
+                            pageNum: this.pageNum,
                             pageSize: this.pageSize,
                             queryString: this.query
                         }
@@ -68,21 +94,24 @@
                         this.audio = res.data;
                     })
                     .catch();
+            },
+            randomSearch(){
+                this.axios.get(this.randomMusicUrl,
+                    {
+                        params: {
+                            pageSize: this.pageSize,
+                        }
+                    }
+                )
+                    .then((res) => {
+                        this.audio = res.data;
+                    })
+                    // eslint-disable-next-line no-console
+                    .catch(e =>(console.log(e)) );
             }
         },
         mounted: function () {
-            this.axios.get(this.randomMusicUrl,
-                {
-                    params: {
-                        pageSize: this.pageSize,
-                    }
-                }
-            )
-                .then((res) => {
-                    this.audio = res.data;
-                })
-                // eslint-disable-next-line no-console
-                .catch(e =>(console.log(e)) );
+            this.randomSearch();
         }
     }
 </script>
