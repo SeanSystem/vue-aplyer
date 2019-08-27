@@ -9,8 +9,10 @@
   },
   "dependencies": {
     "@moefe/vue-aplayer": "^2.0.0-beta.5",
+    "axios": "latest",
     "core-js": "^2.6.5",
-    "vue": "^2.6.10"
+    "vue": "^2.6.10",
+    "vue-axios": "^2.1.4"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.11.0",
