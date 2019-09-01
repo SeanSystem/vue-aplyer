@@ -1,10 +1,8 @@
 <template>
     <div class="hello">
-        <el-row>
-            <el-col :span="4">
-                <el-input v-model="query" placeholder="请输入歌曲名或歌手名"></el-input>
-            </el-col>
-            <el-col :span="5">
+        <div style="display: inline-block;width: 100%">
+            <el-input v-model="query" placeholder="请输入歌曲名或歌手名" style="width: 200px"></el-input>
+            <div style="margin: 5px;display: inline-block">
                 <span>列表数：</span>
                 <el-select v-model="pageSize" placeholder="请选择">
                     <el-option
@@ -14,18 +12,14 @@
                             :value="item.value">
                     </el-option>
                 </el-select>
-            </el-col>
-            <el-col :span="2">
-                <el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button>
-            </el-col>
-            <el-col :span="2">
+            </div>
+            <div style="margin: 5px;display: inline-block">
+                <el-button type="primary" icon="el-icon-search" @click="allSearch">搜索</el-button>
                 <el-button type="primary" @click="preSearch">前一页</el-button>
-            </el-col>
-            <el-col :span="2">
                 <el-button type="primary" @click="nextSearch">后一页</el-button>
-            </el-col>
-        </el-row>
-        <div>
+            </div>
+        </div>
+        <div style="filter:alpha(Opacity=60);-moz-opacity:0.6;opacity: 0.5">
             <aplayer ref="aplayer" :audio="audio" :lrcType="3" autoplay/> <!--fixed 吸底模式 mini 迷你模式-->
         </div>
     </div>
@@ -61,22 +55,22 @@
             };
         },
         methods: {
-            nextSearch(){
-              this.pageNum++;
-              if(this.query == null){
-                  this.randomSearch();
-              }else {
-                  this.search();
-              }
+            nextSearch() {
+                this.pageNum++;
+                if (this.query == null) {
+                    this.randomSearch();
+                } else {
+                    this.search();
+                }
             },
-            preSearch(){
-                if(this.pageNum <= 0){
+            preSearch() {
+                if (this.pageNum <= 0) {
                     this.pageNum = 0;
                 }
                 this.pageNum--;
-                if(this.query == null){
+                if (this.query == null) {
                     this.randomSearch();
-                }else {
+                } else {
                     this.search();
                 }
             },
@@ -95,7 +89,7 @@
                     })
                     .catch();
             },
-            randomSearch(){
+            randomSearch() {
                 this.axios.get(this.randomMusicUrl,
                     {
                         params: {
@@ -107,7 +101,14 @@
                         this.audio = res.data;
                     })
                     // eslint-disable-next-line no-console
-                    .catch(e =>(console.log(e)) );
+                    .catch(e => (console.log(e)));
+            },
+            allSearch() {
+                if (this.query == null) {
+                    this.randomSearch();
+                } else {
+                    this.search();
+                }
             }
         },
         mounted: function () {
@@ -116,6 +117,10 @@
     }
 </script>
 
-<style scoped>
-
+<style>
+    .aplayer-list {
+        display: block;
+        width: 100%;
+        height: 360px !important;
+    }
 </style>
